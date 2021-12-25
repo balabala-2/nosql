@@ -1,0 +1,156 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "grpc.grpc_profile";
+option java_outer_classname = "grpc_profile";
+option objc_class_prefix = "HLW";
+
+package grpc_profile;
+
+// The greeting service definition.
+service ServerResponse {
+  // Sends a greeting
+  rpc response (Request) returns (Response) {}
+}
+
+// The request message containing the user's name.
+message Request {
+  int32 userid = 1;
+}
+
+// The response message containing the greetings
+message Response {
+  repeated int32 movies = 1;
+}
+
+message User{
+  int32 userId = 1;
+  double avgRating = 2;
+  double highestRating = 3;
+  double lowestRating = 4;
+  int32 ratingCount = 5;
+  repeated Rating ratings = 6;
+  repeated User_tag_relevance tags = 7;
+}
+
+message User_tag_relevance{
+  int32 tagId = 1;
+  float relevance = 2;
+}
+
+message Movie{
+  int32 movieId = 1;
+  string title = 2;
+  int32 releaseYear = 3;
+
+  repeated MovieTag genres = 4;
+
+  int32 ratingCount = 5;
+  float avgScore = 6;
+  repeated Rating ratings = 7;
+  repeated Rating topRatings = 8;
+
+  float IDF = 9;
+}
+
+message Movie_genres{
+  int32 movieId = 1;
+  repeated string genre = 2;
+}
+
+message Movie_rating{
+  int32 movieId = 1;
+  float rating = 2;
+}
+
+message MovieTags{
+  repeated MovieTag tags = 1;
+}
+
+message Tag{
+  repeated Movie_relevance movies = 1;
+  int32 tagId = 2;
+  string tagName = 3;
+}
+
+message Movie_relevance{
+  int32 movieId = 1;
+  string title = 2;
+  int32 releaseYear = 3;
+  float avgScore = 4;
+  float relevance = 5;
+}
+
+message MovieTag{
+  int32 tagId = 1;
+  string tagName = 2;
+  float relevance = 3;
+}
+
+message Rating{
+  int32 movieId = 1;
+  int32 userId = 2;
+  float score = 3;
+  int64 timestamp = 4;
+}
+
+/**
+user -> user
+find the user who is similar to the specific user
+ */
+message U2U{
+  int32 userId = 1;
+  repeated int32 userIds = 2;
+}
+
+/**
+user -> movie
+find movies based on the movies which are seen by the specific user
+ */
+message U2I{
+  int32 userId = 1;
+  repeated RecommendMovies movies = 2;
+}
+
+message RecommendMovies{
+  int32 movieIds = 1;
+  float rating = 2;
+}
+/**
+movie -> movie
+find similar movie by the specific movie
+ */
+message I2I_word2Vec{
+  int32 movieId = 1;
+  repeated RecommendMovies movies = 2;
+}
+/**
+movie -> movie
+find similar movie by the specific movie
+ */
+message I2I_als{
+  int32 movieId = 1;
+  repeated RecommendMovies movies = 2;
+}
+
+message UserIds{
+  repeated int32 UserIds = 1;
+}
+
+/**
+recommend result
+ */
+message RecommendResult{
+  int32 userId = 1;
+  repeated int32 movieIds = 2;
+}
+
+message UserEmb{
+  int32 userID = 1;
+  repeated float emb = 2;
+}
+
+message MovieEmb{
+  int32 movieId = 1;
+  repeated float emb = 2;
+}
